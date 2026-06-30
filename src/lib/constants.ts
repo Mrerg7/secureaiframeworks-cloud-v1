@@ -1,7 +1,7 @@
 export const SITE_URL = 'https://secureaiframeworks.cloud';
 export const SITE_NAME = 'secureaiframeworks.cloud';
 export const ACQUISITION_EMAIL = 'sales@desertrich.com';
-export const GOOGLE_SITE_VERIFICATION = '';
+export const GOOGLE_SITE_VERIFICATION = 'SHdvjEOTSzbqlHLq2mrfqsjXFt9jCUgeyRXyUFlh4Lk';
 
 /** Cloudflare Images CDN — hero / OG */
 export const HERO_IMAGE_URL =
