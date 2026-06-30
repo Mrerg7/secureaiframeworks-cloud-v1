@@ -11,7 +11,3 @@ not_found_handling = "single-page-application"
 [[routes]]
 pattern = "secureaiframeworks.cloud"
 custom_domain = true
-
-[[routes]]
-pattern = "*.secureaiframeworks.cloud"
-custom_domain = true
