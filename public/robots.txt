@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://secureaiframeworks.cloud/sitemap-index.xml

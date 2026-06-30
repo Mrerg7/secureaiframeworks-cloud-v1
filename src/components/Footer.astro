@@ -1,0 +1,80 @@
+---
+import {
+  SITE_NAME,
+  ACQUISITION_EMAIL,
+  DISCLAIMER,
+  acquisitionMailto,
+} from '../lib/constants';
+
+const year = new Date().getFullYear();
+const mailto = acquisitionMailto();
+---
+
+<footer class="border-t border-white/5 bg-dark">
+  <!-- Sophisticated domain acquisition CTA -->
+  <div class="max-w-6xl mx-auto px-6 py-16 md:py-20">
+    <div class="relative overflow-hidden rounded-3xl border border-[#22f5ff]/20 bg-gradient-to-br from-dark-100 via-dark to-[#22f5ff]/5 p-8 md:p-12">
+      <!-- Ambient glow orbs -->
+      <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-[#22f5ff]/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
+      <div class="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-[#a855f7]/8 blur-2xl pointer-events-none" aria-hidden="true"></div>
+
+      <div class="relative grid md:grid-cols-12 gap-10 items-center">
+        <div class="md:col-span-7 space-y-4">
+          <p class="inline-flex items-center gap-2 text-[10px] uppercase tracking-[2.4px] font-extrabold text-[#22f5ff]">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#22f5ff] animate-pulse"></span>
+            Domain available for acquisition
+          </p>
+          <h2 class="font-display text-3xl sm:text-4xl tracking-tight leading-tight text-white">
+            Acquire <span class="gradient-text">secureaiframeworks.cloud</span>
+          </h2>
+          <p class="text-white/50 max-w-xl text-sm md:text-base leading-relaxed">
+            A rare, category-owning .cloud domain that positions you as the definitive authority for secure AI frameworks, guardrails, and enterprise AI security infrastructure. Confidential inquiries welcome — professional escrow transfer and fast closing available.
+          </p>
+        </div>
+
+        <div class="md:col-span-5 flex flex-col sm:flex-row md:flex-col gap-4 md:items-end">
+          <a
+            href={mailto}
+            class="group w-full md:w-auto text-center px-8 py-4 bg-gradient-to-r from-[#22f5ff] to-[#a855f7] text-dark font-extrabold rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(34,245,255,0.2)] flex items-center justify-center gap-2"
+          >
+            <span>Request acquisition terms</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 group-hover:translate-x-0.5 transition-transform"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14m-7-7l7 7-7 7" />
+            </svg>
+          </a>
+          <a
+            href={`mailto:${ACQUISITION_EMAIL}`}
+            class="w-full md:w-auto text-center px-8 py-3.5 border border-[#22f5ff]/30 rounded-2xl text-sm font-semibold text-[#22f5ff] hover:border-[#22f5ff]/50 hover:text-cyan-300 transition-colors"
+          >
+            {ACQUISITION_EMAIL}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legal + meta -->
+  <div class="max-w-6xl mx-auto px-6 pb-12">
+    <p class="text-[11px] leading-relaxed text-white/40 max-w-4xl border-t border-white/10 pt-8">
+      {DISCLAIMER}
+      <span class="block mt-2 text-white/30">Information current as of June 2026.</span>
+    </p>
+
+    <div class="mt-8 pt-6 border-t border-white/10 text-xs text-white/40 flex flex-col md:flex-row gap-y-4 items-center justify-between">
+      <div>
+        Transactions secured via <span class="font-medium text-white/60">Escrow.com</span> · Premium domain brokerage
+      </div>
+      <div class="text-[10px] text-center md:text-right">
+        &copy; {year} {SITE_NAME} · All rights reserved · Clean Title · Ready for Immediate Transfer
+      </div>
+    </div>
+  </div>
+</footer>

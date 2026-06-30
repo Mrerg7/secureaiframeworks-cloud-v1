@@ -1,0 +1,100 @@
+---
+import {
+  SITE_URL,
+  SITE_NAME,
+  HERO_IMAGE_URL,
+  ACQUISITION_EMAIL,
+} from '../lib/constants';
+
+const description =
+  'secureaiframeworks.cloud — The definitive, category-owning premium .cloud domain for secure AI frameworks, enterprise AI security, guardrails, compliance, and trustworthy AI infrastructure.';
+
+const webPage = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: `${SITE_NAME} — Secure AI Frameworks — Premium Domain`,
+  description,
+  url: SITE_URL,
+  inLanguage: 'en-US',
+  primaryImageOfPage: {
+    '@type': 'ImageObject',
+    url: HERO_IMAGE_URL,
+    contentUrl: HERO_IMAGE_URL,
+  },
+  about: {
+    '@type': 'Thing',
+    name: 'Secure AI Frameworks Domain',
+    description:
+      'Premium .cloud domain name asset for secure AI frameworks, enterprise AI security, guardrails, governance, and trustworthy AI infrastructure.',
+  },
+};
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE_NAME,
+  url: SITE_URL,
+  email: ACQUISITION_EMAIL,
+  logo: HERO_IMAGE_URL,
+  description,
+};
+
+const product = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: 'secureaiframeworks.cloud domain name',
+  description:
+    'Premium .cloud domain for secure AI frameworks and enterprise AI security infrastructure. A category-owning domain asset for AI security, guardrails, compliance, and trustworthy AI.',
+  category: 'Domain Name',
+  offers: {
+    '@type': 'Offer',
+    availability: 'https://schema.org/InStock',
+    price: '14997',
+    priceCurrency: 'USD',
+    seller: {
+      '@type': 'Organization',
+      email: ACQUISITION_EMAIL,
+    },
+    url: `mailto:${ACQUISITION_EMAIL}`,
+    shippingDetails: {
+      '@type': 'OfferShippingDetails',
+      shippingRate: {
+        '@type': 'MonetaryAmount',
+        value: '0.00',
+        currency: 'USD',
+      },
+      deliveryTime: {
+        '@type': 'ShippingDeliveryTime',
+        handlingTime: {
+          '@type': 'QuantitativeValue',
+          minValue: 0,
+          maxValue: 1,
+          unitCode: 'd',
+        },
+        transitTime: {
+          '@type': 'QuantitativeValue',
+          minValue: 0,
+          maxValue: 0,
+          unitCode: 'd',
+        },
+      },
+      shippingDestination: {
+        '@type': 'DefinedRegion',
+        addressCountry: 'US',
+      },
+    },
+    hasMerchantReturnPolicy: {
+      '@type': 'MerchantReturnPolicy',
+      returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+      returnMethod: 'https://schema.org/ReturnByMail',
+      returnFees: 'https://schema.org/FreeReturn',
+      applicableCountry: 'US',
+      merchantReturnDays: 0,
+    },
+  },
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(webPage)} />
+<script type="application/ld+json" set:html={JSON.stringify(organization)} />
+<script type="application/ld+json" set:html={JSON.stringify(product)} />

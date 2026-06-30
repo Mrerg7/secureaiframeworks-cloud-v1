@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_NAME } from '../lib/constants';
+---
+
+<BaseLayout
+  title={`404 — Page Not Found | ${SITE_NAME}`}
+  description="The page you requested could not be found."
+  noindex={true}
+>
+  <main class="min-h-screen flex items-center justify-center px-6 text-center">
+    <div>
+      <h1 class="font-display text-7xl md:text-8xl font-bold tracking-tighter mb-4">
+        404
+      </h1>
+      <p class="text-xl text-white/70 mb-8 max-w-md mx-auto">
+        The page you're looking for doesn't exist. But the domain you're looking for does.
+      </p>
+      <a
+        href="/"
+        class="inline-flex items-center justify-center gap-x-3 px-8 py-4 text-lg font-semibold rounded-3xl bg-gradient-to-r from-[#22f5ff] to-[#a855f7] text-dark hover:brightness-105 active:scale-[0.985] transition-all"
+      >
+        Return to secureaiframeworks.cloud
+      </a>
+    </div>
+  </main>
+</BaseLayout>
