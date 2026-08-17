@@ -26,6 +26,8 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
@@ -46,14 +48,16 @@
   }
 
   .section-header {
-    @apply text-4xl md:text-5xl tracking-tighter font-bold leading-none;
+    @apply text-[1.85rem] sm:text-4xl md:text-5xl tracking-tighter font-bold leading-none;
   }
 
   .domain-text {
-    font-size: clamp(2.5rem, 7vw, 5rem);
-    line-height: 0.92;
+    font-size: clamp(1.55rem, 8.4vw, 5rem);
+    line-height: 0.95;
     font-weight: 700;
     letter-spacing: -0.065em;
+    overflow-wrap: anywhere;
+    word-break: break-word;
     background: linear-gradient(90deg, #ffffff, #e0e7ff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

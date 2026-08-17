@@ -1,5 +1,18 @@
 export const SITE_URL = 'https://secureaiframeworks.cloud';
 export const SITE_NAME = 'secureaiframeworks.cloud';
+
+/** Apex HTTPS URL with a trailing slash and no query/hash — the only URL we want indexed. */
+export function canonicalUrl(pathname = '/'): string {
+  const origin = SITE_URL.replace(/\/+$/, '');
+  let path = (pathname.split('#')[0] ?? '/').split('?')[0] || '/';
+  if (!path.startsWith('/')) path = `/${path}`;
+  path = path.replace(/\/index\.html$/i, '/').replace(/\/index$/i, '/');
+  if (!path.endsWith('/')) path += '/';
+  path = path.replace(/\/{2,}/g, '/');
+  return `${origin}${path}`;
+}
+
+export const CANONICAL_HOME = canonicalUrl('/');
 export const ACQUISITION_EMAIL = 'sales@desertrich.com';
 export const GOOGLE_SITE_VERIFICATION = 'SHdvjEOTSzbqlHLq2mrfqsjXFt9jCUgeyRXyUFlh4Lk';
 

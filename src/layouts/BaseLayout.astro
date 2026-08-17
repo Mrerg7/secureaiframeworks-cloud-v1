@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import StructuredData from '../components/StructuredData.astro';
-import { SITE_NAME, SITE_URL, HERO_IMAGE_URL, GOOGLE_SITE_VERIFICATION } from '../lib/constants';
+import { SITE_NAME, HERO_IMAGE_URL, GOOGLE_SITE_VERIFICATION, canonicalUrl } from '../lib/constants';
 
 interface Props {
   title?: string;
@@ -15,7 +15,7 @@ const {
   noindex = false,
 } = Astro.props;
 
-const canonical = Astro.url.href;
+const canonical = canonicalUrl(Astro.url.pathname);
 const ogImage = HERO_IMAGE_URL;
 const themeColor = '#0a0a0f';
 ---
@@ -24,7 +24,7 @@ const themeColor = '#0a0a0f';
 <html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -38,7 +38,7 @@ const themeColor = '#0a0a0f';
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
       )
     }
-    <link rel="canonical" href={canonical} />
+    {noindex ? null : <link rel="canonical" href={canonical} />}
     <meta name="author" content={SITE_NAME} />
 
     <!-- Open Graph / Facebook -->
@@ -73,7 +73,7 @@ const themeColor = '#0a0a0f';
     />
     <link rel="preconnect" href="https://imagedelivery.net" />
 
-    <StructuredData />
+    {noindex ? null : <StructuredData />}
   </head>
   <body class="min-h-screen bg-dark text-white antialiased">
     <slot />

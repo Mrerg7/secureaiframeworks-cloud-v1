@@ -1,9 +1,9 @@
 ---
 import {
-  SITE_URL,
   SITE_NAME,
   HERO_IMAGE_URL,
   ACQUISITION_EMAIL,
+  CANONICAL_HOME,
 } from '../lib/constants';
 
 const description =
@@ -14,7 +14,7 @@ const webPage = {
   '@type': 'WebPage',
   name: `${SITE_NAME} — Secure AI Frameworks — Premium Domain`,
   description,
-  url: SITE_URL,
+  url: CANONICAL_HOME,
   inLanguage: 'en-US',
   primaryImageOfPage: {
     '@type': 'ImageObject',
@@ -33,7 +33,7 @@ const organization = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: SITE_NAME,
-  url: SITE_URL,
+  url: CANONICAL_HOME,
   email: ACQUISITION_EMAIL,
   logo: HERO_IMAGE_URL,
   description,
