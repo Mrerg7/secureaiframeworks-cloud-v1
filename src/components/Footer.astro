@@ -63,18 +63,25 @@ const mailto = acquisitionMailto();
 
   <!-- Legal + meta -->
   <div class="max-w-6xl mx-auto px-6 pb-12">
-    <p class="text-[11px] leading-relaxed text-white/40 max-w-4xl border-t border-white/10 pt-8">
+    <p class="text-[11px] leading-relaxed text-white/55 max-w-4xl border-t border-white/10 pt-8">
       {DISCLAIMER}
-      <span class="block mt-2 text-white/30">Information current as of June 2026.</span>
+      <span class="block mt-2 text-white/50">Information current as of June 2026.</span>
     </p>
 
-    <div class="mt-8 pt-6 border-t border-white/10 text-xs text-white/40 flex flex-col md:flex-row gap-y-4 items-center justify-between">
-      <div>
+    <div class="mt-8 pt-6 border-t border-white/10 text-xs text-white/55 flex flex-col md:flex-row gap-y-4 items-center justify-between">
+      <div class="order-2 md:order-1">
         Transactions secured via <span class="font-medium text-white/60">Escrow.com</span> · Premium domain brokerage
       </div>
-      <div class="text-[10px] text-center md:text-right">
+      <div class="order-1 md:order-2 text-[10px] text-center md:text-right">
         &copy; {year} {SITE_NAME} · All rights reserved · Clean Title · Ready for Immediate Transfer
       </div>
     </div>
+
+    <nav class="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-xs text-white/55" aria-label="Footer">
+      <a href="/#faq" class="inline-flex items-center min-h-11 px-1 py-2.5 hover:text-white transition-colors">FAQ</a>
+      <a href="/#acquire" class="inline-flex items-center min-h-11 px-1 py-2.5 hover:text-white transition-colors">Pricing</a>
+      <a href="/blog/" class="inline-flex items-center min-h-11 px-1 py-2.5 hover:text-white transition-colors">Acquisition Guides</a>
+      <a href={`mailto:${ACQUISITION_EMAIL}`} class="inline-flex items-center min-h-11 px-1 py-2.5 hover:text-white transition-colors">{ACQUISITION_EMAIL}</a>
+    </nav>
   </div>
 </footer>

@@ -1,23 +1,39 @@
 ---
 import '../styles/global.css';
 import StructuredData from '../components/StructuredData.astro';
-import { SITE_NAME, HERO_IMAGE_URL, GOOGLE_SITE_VERIFICATION, canonicalUrl } from '../lib/constants';
+import {
+  SITE_NAME,
+  HERO_IMAGE_URL,
+  GOOGLE_SITE_VERIFICATION,
+  PAGE_TITLE,
+  PAGE_DESCRIPTION,
+  canonicalUrl,
+  type FaqItem,
+  type ArticleMeta,
+} from '../lib/constants';
 
 interface Props {
   title?: string;
   description?: string;
   noindex?: boolean;
+  faq?: FaqItem[];
+  article?: ArticleMeta;
 }
 
 const {
-  title = `${SITE_NAME} — Secure AI Frameworks — Premium Domain`,
-  description = 'Acquire secureaiframeworks.cloud — the definitive, category-owning premium .cloud domain for secure AI frameworks, enterprise AI security, guardrails, compliance, and trustworthy AI infrastructure.',
+  title = PAGE_TITLE,
+  description = PAGE_DESCRIPTION,
   noindex = false,
+  faq,
+  article,
 } = Astro.props;
 
 const canonical = canonicalUrl(Astro.url.pathname);
 const ogImage = HERO_IMAGE_URL;
 const themeColor = '#0a0a0f';
+const fontInter = '/fonts/inter-latin.woff2';
+const fontDisplay = '/fonts/space-grotesk-latin.woff2';
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
 ---
 
 <!doctype html>
@@ -30,7 +46,7 @@ const themeColor = '#0a0a0f';
     <meta name="description" content={description} />
     <meta name="theme-color" content={themeColor} />
     <meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION} />
-    <meta name="keywords" content="secure AI frameworks, AI security, AI guardrails, trustworthy AI, enterprise AI security, AI compliance, AI infrastructure" />
+    <meta name="keywords" content="buy premium domain, secure AI frameworks domain, AI security domain for sale, enterprise AI security, AI guardrails, trustworthy AI, domain marketplace" />
     {
       noindex ? (
         <meta name="robots" content="noindex, nofollow" />
@@ -64,16 +80,13 @@ const themeColor = '#0a0a0f';
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Critical assets: fonts (same-origin, swap) + hero LCP image on the home page -->
+    <link rel="preload" href={fontInter} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={fontDisplay} as="font" type="font/woff2" crossorigin />
+    {isHome && <link rel="preload" href={ogImage} as="image" fetchpriority="high" />}
     <link rel="preconnect" href="https://imagedelivery.net" />
 
-    {noindex ? null : <StructuredData />}
+    {noindex ? null : <StructuredData title={title} description={description} faq={faq} article={article} />}
   </head>
   <body class="min-h-screen bg-dark text-white antialiased">
     <slot />

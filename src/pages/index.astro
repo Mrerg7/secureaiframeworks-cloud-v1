@@ -2,74 +2,149 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { SITE_NAME, ACQUISITION_EMAIL, HERO_IMAGE_URL, acquisitionMailto } from '../lib/constants';
+import { getCollection } from 'astro:content';
+import {
+  SITE_NAME,
+  DOMAIN_PRICE_DISPLAY,
+  buyNowMailto,
+  makeOfferMailto,
+  acquisitionMailto,
+  type FaqItem,
+} from '../lib/constants';
 
-const mailto = acquisitionMailto();
-const title = `${SITE_NAME} — Secure AI Frameworks — Premium Domain`;
-const description = 'Acquire secureaiframeworks.cloud — the definitive, category-owning premium .cloud domain for secure AI frameworks, enterprise AI security, guardrails, compliance, and trustworthy AI infrastructure.';
+const buyNow = buyNowMailto();
+const makeOffer = makeOfferMailto();
+const inquire = acquisitionMailto();
+
+const title = `${SITE_NAME} | Premium Domain for Sale — ${DOMAIN_PRICE_DISPLAY}`;
+const description =
+  `Buy ${SITE_NAME} — the category-owning premium domain for secure AI frameworks and enterprise AI security. ${DOMAIN_PRICE_DISPLAY}, escrow-protected, fast transfer.`;
+
+const faq: FaqItem[] = [
+  {
+    question: 'Is secureaiframeworks.cloud available for purchase?',
+    answer:
+      'Yes. secureaiframeworks.cloud is available for immediate acquisition at $14,997 USD. The domain has a clean title, no trademarks in dispute, and can be transferred to your registrar or account of choice.',
+  },
+  {
+    question: 'How much does the secureaiframeworks.cloud domain cost?',
+    answer:
+      'The asking price is $14,997 USD, a one-time payment that includes full ownership and transfer. Flexible terms are available for qualified buyers who prefer a structured acquisition.',
+  },
+  {
+    question: 'How do I buy a premium domain safely?',
+    answer:
+      'Use an escrow service such as Escrow.com. Your funds are held by a licensed third party while the domain is transferred; the seller is only paid once the transfer is confirmed complete. Never wire funds directly to an unknown seller.',
+  },
+  {
+    question: 'How long does a domain name transfer take?',
+    answer:
+      'Most gTLD transfers complete in 1 to 5 days once you unlock the domain at the current registrar and approve the authorization code. After-market purchases settled through escrow usually close within 3 to 7 business days.',
+  },
+  {
+    question: 'Why is a .cloud domain a strong choice for an AI security company?',
+    answer:
+      '.cloud is an established, ICANN-approved TLD used by infrastructure and platform companies. A descriptive exact-match name such as secureaiframeworks.cloud signals category leadership, is easy to spell and remember, and aligns with how enterprise buyers search for secure AI infrastructure.',
+  },
+  {
+    question: 'Can I finance a premium domain purchase?',
+    answer:
+      'Yes. Structured payment terms can be arranged for qualified buyers, with the domain held in escrow for the duration of the agreement. Request acquisition terms to discuss options.',
+  },
+];
+
+const guides = (await getCollection('blog'))
+  .sort(
+    (a, b) =>
+      new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime(),
+  )
+  .slice(0, 3);
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} faq={faq}>
   <Nav />
 
+  <main id="main">
   <!-- Hero Section -->
-  <header class="hero-bg min-h-[100dvh] flex items-center relative pt-20"
-    style={`background-image: linear-gradient(rgba(10, 10, 15, 0.68), rgba(10, 10, 15, 0.75)), url(${HERO_IMAGE_URL}); background-size: cover; background-position: center;`}>
-    <div class="max-w-5xl mx-auto px-6 pb-16 pt-12 md:pt-8 text-center relative z-10">
+  <header class="hero-art min-h-[100dvh] flex items-center relative pt-24">
+    <div class="max-w-5xl mx-auto px-6 pb-16 pt-10 md:pt-8 text-center relative z-10">
       <!-- Premium Badge -->
-      <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 mb-8">
+      <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 mb-6">
         <div class="w-1.5 h-1.5 bg-[#22f5ff] rounded-full animate-pulse"></div>
         <span class="text-xs font-semibold tracking-[1.5px] text-white/80">ENTERPRISE AI SECURITY DOMAIN</span>
       </div>
 
       <!-- Domain Name -->
-      <h1 class="domain-text font-display mb-3 tracking-[-0.07em]">
+      <h1 class="domain-text font-display mb-4 tracking-[-0.07em]">
         secureaiframeworks<wbr />.cloud
       </h1>
 
+      <!-- Price + availability, above the fold -->
+      <div class="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-2 px-5 py-2.5 rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.07] mb-7">
+        <span class="text-2xl sm:text-3xl font-semibold tracking-tight text-white">{DOMAIN_PRICE_DISPLAY}</span>
+        <span class="text-xs font-semibold tracking-[1.5px] text-emerald-300">USD · AVAILABLE NOW</span>
+        <span class="hidden sm:block w-px h-5 bg-white/15" aria-hidden="true"></span>
+        <span class="text-xs text-white/60">One-time · full ownership</span>
+      </div>
+
       <!-- Tagline -->
-      <p class="max-w-2xl mx-auto text-3xl md:text-4xl font-light tracking-tight text-white/90 mb-4">
+      <p class="max-w-2xl mx-auto text-2xl sm:text-3xl md:text-4xl font-light tracking-tight text-white/90 mb-4">
         The foundation for<br />
         trustworthy AI at scale.
       </p>
 
-      <p class="max-w-lg mx-auto text-xl text-white/70 mb-10">
+      <p class="max-w-lg mx-auto text-lg sm:text-xl text-white/70 mb-9">
         Secure frameworks are no longer optional.<br />
         This is the domain that owns the category.
       </p>
 
       <!-- CTAs -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href={mailto}
-           class="group w-full sm:w-auto inline-flex items-center justify-center gap-x-3 px-9 py-4 text-lg font-semibold rounded-3xl bg-gradient-to-r from-[#22f5ff] to-[#a855f7] text-dark hover:brightness-105 active:scale-[0.985] transition-all shadow-xl shadow-[#22f5ff]/20">
-          <span>Secure This Asset</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <a href={buyNow}
+           class="group w-full sm:w-auto inline-flex items-center justify-center gap-x-3 px-9 py-4 min-h-12 text-lg font-semibold rounded-3xl bg-gradient-to-r from-[#22f5ff] to-[#a855f7] text-dark hover:brightness-105 active:scale-[0.985] transition-all shadow-xl shadow-[#22f5ff]/20">
+          <span>Buy Now — {DOMAIN_PRICE_DISPLAY}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M14 5l7 7-7 7m-4-7h11" />
           </svg>
         </a>
-        <a href="#positioning"
-           class="w-full sm:w-auto inline-flex items-center justify-center gap-x-2 px-8 py-4 text-lg font-medium rounded-3xl border border-white/20 hover:bg-white/5 transition-colors text-white">
-          Explore the Opportunity
+        <a href={makeOffer}
+           class="w-full sm:w-auto inline-flex items-center justify-center gap-x-2 px-8 py-4 min-h-12 text-lg font-medium rounded-3xl border border-white/20 hover:bg-white/5 transition-colors text-white">
+          Make an Offer
         </a>
       </div>
 
-      <div class="mt-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs text-white/50 px-2">
-        <div class="flex items-center gap-x-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7" />
+      <!-- Trust signals -->
+      <ul class="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-xs text-white/55 px-2">
+        <li class="flex items-center gap-x-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
           </svg>
-          <span>Instant Transfer</span>
-        </div>
-        <div>Escrow Protected</div>
-        <div>High-Intent Buyers</div>
-      </div>
+          <span>Escrow.com protected</span>
+        </li>
+        <li class="flex items-center gap-x-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>Clean title · instant transfer</span>
+        </li>
+        <li class="flex items-center gap-x-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>HTTPS secured · confidential inquiry</span>
+        </li>
+      </ul>
+
+      <p class="mt-4 text-[11px] tracking-wide text-white/55">
+        One-of-one asset — only one company can own this name.
+      </p>
     </div>
 
     <!-- Subtle scroll indicator -->
     <div class="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:block">
-      <div class="flex flex-col items-center gap-y-1 text-[10px] tracking-widest text-white/40">
+      <div class="flex flex-col items-center gap-y-1 text-[10px] tracking-widest text-white/55">
         <div>SCROLL TO BEGIN</div>
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7" />
         </svg>
       </div>
@@ -77,7 +152,7 @@ const description = 'Acquire secureaiframeworks.cloud — the definitive, catego
   </header>
 
   <!-- The Opportunity / Positioning Section -->
-  <section id="positioning" class="max-w-5xl mx-auto px-6 pt-20 pb-16">
+  <section id="positioning" class="max-w-5xl mx-auto px-6 pt-20 pb-16 reveal">
     <div class="grid md:grid-cols-12 gap-x-12 items-center">
       <!-- Left content -->
       <div class="md:col-span-7">
@@ -125,7 +200,7 @@ const description = 'Acquire secureaiframeworks.cloud — the definitive, catego
   </section>
 
   <!-- Why This Domain Section -->
-  <section id="why" class="bg-white/5 border-y border-white/10 py-16">
+  <section id="why" class="bg-white/5 border-y border-white/10 py-16 reveal">
     <div class="max-w-6xl mx-auto px-6">
       <div class="text-center mb-12">
         <div class="inline-block px-4 py-1 rounded-full bg-white/5 text-xs tracking-[1.5px] font-medium text-white/60 mb-3">WHY THIS DOMAIN</div>
@@ -136,7 +211,7 @@ const description = 'Acquire secureaiframeworks.cloud — the definitive, catego
         <!-- Card 1 -->
         <div class="modern-card glass rounded-3xl p-8 border border-white/10 hover:border-[#22f5ff]/30">
           <div class="w-11 h-11 rounded-2xl bg-[#22f5ff]/10 flex items-center justify-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#22f5ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#22f5ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 8.944 11.922" />
             </svg>
           </div>
@@ -147,7 +222,7 @@ const description = 'Acquire secureaiframeworks.cloud — the definitive, catego
         <!-- Card 2 -->
         <div class="modern-card glass rounded-3xl p-8 border border-white/10 hover:border-[#a855f7]/30">
           <div class="w-11 h-11 rounded-2xl bg-[#a855f7]/10 flex items-center justify-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#a855f7]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#a855f7]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2.009 2.009 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
@@ -158,7 +233,7 @@ const description = 'Acquire secureaiframeworks.cloud — the definitive, catego
         <!-- Card 3 -->
         <div class="modern-card glass rounded-3xl p-8 border border-white/10 hover:border-emerald-400/30">
           <div class="w-11 h-11 rounded-2xl bg-emerald-400/10 flex items-center justify-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
@@ -170,7 +245,7 @@ const description = 'Acquire secureaiframeworks.cloud — the definitive, catego
   </section>
 
   <!-- Ideal For / Use Cases -->
-  <section id="uses" class="max-w-6xl mx-auto px-6 py-20">
+  <section id="uses" class="max-w-6xl mx-auto px-6 py-20 reveal">
     <div class="max-w-2xl mb-12">
       <div class="inline-block px-3.5 py-1 rounded-full bg-white/5 text-xs tracking-[1.5px] font-medium text-white/60 mb-4">IDEAL FOR</div>
       <h2 class="section-header tracking-[-0.035em] leading-none">The natural home for leaders in AI security.</h2>
@@ -215,8 +290,71 @@ const description = 'Acquire secureaiframeworks.cloud — the definitive, catego
     </div>
   </section>
 
+  <!-- FAQ -->
+  <section id="faq" class="bg-white/5 border-y border-white/10 py-16 reveal">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-10">
+        <div class="inline-block px-4 py-1 rounded-full bg-white/5 text-xs tracking-[1.5px] font-medium text-white/60 mb-3">FREQUENTLY ASKED QUESTIONS</div>
+        <h2 class="section-header tracking-[-0.03em]">Buying this domain, answered.</h2>
+      </div>
+
+      <div class="space-y-3">
+        {
+          faq.map((item) => (
+            <details class="group glass rounded-2xl border border-white/10 overflow-hidden">
+              <summary class="flex items-start justify-between gap-4 cursor-pointer list-none px-6 py-5 min-h-12 text-left text-white hover:text-[#22f5ff] transition-colors">
+                <span class="font-medium text-base sm:text-lg leading-snug">{item.question}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 mt-1 transition-transform group-open:rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+              </summary>
+              <div class="px-6 pb-5 -mt-1 text-white/70 leading-relaxed">{item.answer}</div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Guides / internal links -->
+  {
+    guides.length > 0 && (
+      <section id="guides" class="max-w-6xl mx-auto px-6 py-20 reveal">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+          <div>
+            <div class="inline-block px-3.5 py-1 rounded-full bg-white/5 text-xs tracking-[1.5px] font-medium text-white/60 mb-4">ACQUISITION GUIDES</div>
+            <h2 class="section-header tracking-[-0.035em] leading-none">Research before you buy.</h2>
+          </div>
+          <a href="/blog/" class="nav-link inline-flex items-center min-h-11 text-sm font-semibold text-[#22f5ff] hover:text-cyan-300">
+            View all guides →
+          </a>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5">
+          {guides.map((post) => (
+            <a
+              href={`/blog/${post.id}/`}
+              class="modern-card glass rounded-3xl p-7 border border-white/10 hover:border-[#22f5ff]/30 flex flex-col"
+            >
+              <div class="font-mono text-[11px] tracking-widest text-white/55 mb-3">
+                {new Date(post.data.pubDate).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })}
+              </div>
+              <h3 class="font-semibold text-lg tracking-tight mb-2 leading-snug">{post.data.title}</h3>
+              <p class="text-sm text-white/60 leading-relaxed">{post.data.description}</p>
+              <span class="mt-auto pt-4 text-sm font-semibold text-[#22f5ff]">Read guide →</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
   <!-- Poignant Closer -->
-  <div class="max-w-3xl mx-auto px-6 text-center py-8 border-y border-white/10">
+  <div class="max-w-3xl mx-auto px-6 text-center py-8 border-y border-white/10 reveal">
     <p class="text-2xl md:text-3xl font-light tracking-tight text-white/90">
       The organizations that win with AI<br />
       will be the ones that secure it first.
@@ -224,43 +362,53 @@ const description = 'Acquire secureaiframeworks.cloud — the definitive, catego
   </div>
 
   <!-- Final CTA Section -->
-  <section id="acquire" class="max-w-4xl mx-auto px-6 py-20">
+  <section id="acquire" class="max-w-4xl mx-auto px-6 py-20 reveal">
     <div class="text-center mb-10">
       <div class="inline-block px-4 py-1 rounded-full bg-emerald-400/10 text-emerald-400 text-xs tracking-[1.5px] font-semibold mb-4">PREMIUM ACQUISITION</div>
       <h2 class="section-header tracking-[-0.03em]">A strategic asset in a critical category.</h2>
     </div>
 
-    <div class="glass rounded-3xl p-10 md:p-14 border border-white/10">
+    <div class="glass rounded-3xl p-8 sm:p-10 md:p-14 border border-white/10">
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-y-8">
         <div>
           <div class="flex items-baseline gap-x-2">
-            <span class="text-5xl sm:text-6xl md:text-7xl font-semibold tracking-tighter">$14,997</span>
+            <span class="text-5xl sm:text-6xl md:text-7xl font-semibold tracking-tighter">{DOMAIN_PRICE_DISPLAY}</span>
             <span class="text-white/50 text-xl">USD</span>
           </div>
           <p class="mt-1 text-white/60">One-time acquisition · Full ownership &amp; instant transfer</p>
 
-          <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          <div class="mt-6 flex flex-col gap-y-2 text-sm">
             <div class="flex items-center gap-x-2 text-white/70">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
               </svg>
               <span>Clean title, ready for transfer</span>
             </div>
             <div class="flex items-center gap-x-2 text-white/70">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
               </svg>
               <span>Escrow.com protected transaction</span>
             </div>
+            <div class="flex items-center gap-x-2 text-white/70">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Flexible terms for qualified buyers</span>
+            </div>
           </div>
         </div>
 
-        <div class="md:text-right">
-          <a href={mailto}
-             class="inline-flex w-full md:w-auto items-center justify-center px-10 py-4 rounded-3xl bg-gradient-to-r from-[#22f5ff] to-[#a855f7] font-semibold text-dark text-lg active:scale-[0.985] transition-all hover:brightness-105">
-            Begin Acquisition
+        <div class="md:text-right w-full md:w-auto">
+          <a href={buyNow}
+             class="flex w-full md:w-auto items-center justify-center px-10 py-4 min-h-12 rounded-3xl bg-gradient-to-r from-[#22f5ff] to-[#a855f7] font-semibold text-dark text-lg active:scale-[0.985] transition-all hover:brightness-105">
+            Buy Now — {DOMAIN_PRICE_DISPLAY}
           </a>
-          <p class="text-xs text-white/50 mt-3 md:mt-2">Serious buyers only. Flexible terms available.</p>
+          <a href={makeOffer}
+             class="mt-3 flex w-full md:w-auto items-center justify-center px-10 py-3.5 min-h-12 rounded-3xl border border-white/20 hover:bg-white/5 font-medium text-white transition-colors">
+            Make an Offer
+          </a>
+          <p class="text-xs text-white/50 mt-3">Serious buyers only. Flexible terms available.</p>
         </div>
       </div>
     </div>
@@ -270,8 +418,119 @@ const description = 'Acquire secureaiframeworks.cloud — the definitive, catego
         Descriptive, high-intent domains in the AI security and infrastructure space are increasingly valuable.
         This asset offers immediate relevance and long-term strategic positioning.
       </p>
+      <p class="mt-3">
+        <a href={inquire} class="inline-flex items-center min-h-11 text-xs text-[#22f5ff] hover:text-cyan-300 transition-colors">
+          Prefer to talk first? Contact the acquisition desk →
+        </a>
+      </p>
     </div>
   </section>
 
+  </main>
+
   <Footer />
+
+  <!-- Exit-intent capture -->
+  <div id="exit-intent" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-labelledby="exit-title">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" data-exit-close></div>
+    <div class="relative max-w-lg mx-auto mt-[12vh] px-5">
+      <div class="relative glass rounded-3xl border border-white/15 p-8 text-center">
+        <button type="button" class="absolute top-4 right-4 w-11 h-11 flex items-center justify-center text-white/50 hover:text-white transition-colors" aria-label="Close dialog" data-exit-close>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div class="inline-block px-3 py-1 rounded-full bg-emerald-400/10 text-emerald-400 text-[11px] tracking-[1.5px] font-semibold mb-4">AVAILABLE NOW</div>
+        <h2 id="exit-title" class="font-display text-2xl sm:text-3xl tracking-tight mb-3">
+          secureaiframeworks.cloud is still unclaimed.
+        </h2>
+        <p class="text-white/60 text-sm leading-relaxed mb-6">
+          Asking price <span class="text-white font-semibold">{DOMAIN_PRICE_DISPLAY} USD</span> · escrow-protected · clean title. Request the acquisition brief and closing timeline — no obligation.
+        </p>
+        <a href={buyNow} class="block w-full px-8 py-4 min-h-12 rounded-2xl bg-gradient-to-r from-[#22f5ff] to-[#a855f7] text-dark font-bold transition-all hover:brightness-105 active:scale-[0.985]">
+          Request the acquisition brief
+        </a>
+        <button type="button" class="mt-3 w-full px-8 py-3 min-h-11 rounded-2xl text-sm text-white/50 hover:text-white transition-colors" data-exit-close>
+          No thanks, continue browsing
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Scroll reveal — only hides content when the browser supports both
+    // CSS `scripting:` media queries and IntersectionObserver.
+    const revealItems = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window && revealItems.length > 0) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+      );
+      revealItems.forEach((el) => observer.observe(el));
+      // Failsafe: never leave content hidden if the observer never fires.
+      window.setTimeout(() => {
+        revealItems.forEach((el) => el.classList.add('is-visible'));
+      }, 6000);
+    } else {
+      // No observer support — show everything rather than hide content.
+      revealItems.forEach((el) => el.classList.add('is-visible'));
+    }
+
+    // Exit-intent modal — once per session, keyboard accessible, no tracking.
+    const exitModal = document.getElementById('exit-intent');
+    const EXIT_KEY = 'saf-exit-shown';
+    if (exitModal && !sessionStorage.getItem(EXIT_KEY)) {
+      const focusable = () =>
+        exitModal.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+      let lastFocused: Element | null = null;
+
+      const open = () => {
+        lastFocused = document.activeElement;
+        exitModal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        sessionStorage.setItem(EXIT_KEY, '1');
+        focusable()[0]?.focus();
+      };
+
+      const close = () => {
+        exitModal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+        if (lastFocused instanceof HTMLElement) lastFocused.focus();
+      };
+
+      exitModal.querySelectorAll('[data-exit-close]').forEach((el) => {
+        el.addEventListener('click', close);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (exitModal.classList.contains('hidden')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'Tab') {
+          const items = Array.from(focusable());
+          const first = items[0];
+          const last = items[items.length - 1];
+          if (!first || !last) return;
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      });
+
+      document.addEventListener('mouseout', (e) => {
+        const event = e as MouseEvent;
+        if (event.clientY <= 0 && !event.relatedTarget) open();
+      });
+    }
+  </script>
 </BaseLayout>

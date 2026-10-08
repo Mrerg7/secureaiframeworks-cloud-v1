@@ -1,15 +1,29 @@
 ---
-import { SITE_NAME, acquisitionMailto } from '../lib/constants';
+import { acquisitionMailto } from '../lib/constants';
 
+interface Props {
+  /** False on non-home pages so section anchors point back at the landing page. */
+  home?: boolean;
+}
+
+const { home = true } = Astro.props;
 const mailto = acquisitionMailto();
+const link = (id: string) => (home ? `#${id}` : `/#${id}`);
 ---
 
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/5">
+<a
+  href="#main"
+  class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[70] focus:px-4 focus:py-2 focus:bg-white focus:text-dark focus:rounded-xl focus:font-semibold"
+>
+  Skip to content
+</a>
+
+<nav id="navbar" aria-label="Main" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/5">
   <div class="max-w-6xl mx-auto px-6">
     <div class="flex items-center justify-between h-20">
       <!-- Logo -->
       <div class="flex items-center gap-x-3">
-        <a href="/" class="flex items-center gap-x-3" aria-label={SITE_NAME}>
+        <a href="/" class="flex items-center gap-x-3 min-h-11">
           <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-[#22f5ff] via-[#a855f7] to-[#22f5ff] p-px">
             <div class="w-full h-full bg-dark rounded-2xl flex items-center justify-center">
               <span class="text-[#22f5ff] text-lg font-bold tracking-tighter">SAF</span>
@@ -23,20 +37,22 @@ const mailto = acquisitionMailto();
       </div>
 
       <!-- Desktop Navigation -->
-      <div class="hidden md:flex items-center gap-x-9 text-sm font-medium">
-        <a href="#positioning" class="nav-link text-white/80 hover:text-white">The Opportunity</a>
-        <a href="#why" class="nav-link text-white/80 hover:text-white">Why This Domain</a>
-        <a href="#uses" class="nav-link text-white/80 hover:text-white">Ideal For</a>
+      <div class="hidden md:flex items-center gap-x-7 text-sm font-medium">
+        <a href={link('positioning')} class="nav-link text-white/80 hover:text-white py-2">The Opportunity</a>
+        <a href={link('why')} class="nav-link text-white/80 hover:text-white py-2">Why This Domain</a>
+        <a href={link('uses')} class="nav-link text-white/80 hover:text-white py-2">Ideal For</a>
+        <a href={link('faq')} class="nav-link text-white/80 hover:text-white py-2">FAQ</a>
+        <a href="/blog/" class="nav-link text-white/80 hover:text-white py-2">Guides</a>
       </div>
 
       <!-- CTA Buttons -->
       <div class="flex items-center gap-x-3">
         <a href={mailto}
-           class="hidden sm:inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-2xl border border-white/20 hover:bg-white/5 transition-colors text-white">
+           class="hidden sm:inline-flex items-center justify-center min-h-12 px-6 py-2.5 text-sm font-semibold rounded-2xl border border-white/20 hover:bg-white/5 transition-colors text-white">
           Inquire
         </a>
         <a href={mailto}
-           class="inline-flex items-center justify-center min-h-11 px-4 sm:px-6 py-2.5 text-sm font-semibold rounded-2xl bg-white text-dark hover:bg-white/90 transition-all active:scale-[0.985]">
+           class="inline-flex items-center justify-center min-h-12 px-4 sm:px-6 py-2.5 text-sm font-semibold rounded-2xl bg-white text-dark hover:bg-white/90 transition-all active:scale-[0.985]">
           Secure Now
         </a>
 
@@ -57,13 +73,15 @@ const mailto = acquisitionMailto();
 </nav>
 
 <!-- Mobile Menu -->
-<div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-40 bg-dark pt-20">
-  <div class="px-6 py-8 flex flex-col gap-y-6 text-lg font-medium">
-    <a href="#positioning" class="mobile-nav-link min-h-11 flex items-center py-3 text-white/80">The Opportunity</a>
-    <a href="#why" class="mobile-nav-link min-h-11 flex items-center py-3 text-white/80">Why This Domain</a>
-    <a href="#uses" class="mobile-nav-link min-h-11 flex items-center py-3 text-white/80">Ideal For</a>
+<div id="mobile-menu" class="hidden md:hidden fixed inset-0 z-40 bg-dark pt-20 overflow-y-auto">
+  <div class="px-6 py-8 flex flex-col gap-y-2 text-lg font-medium">
+    <a href={link('positioning')} class="mobile-nav-link min-h-12 flex items-center py-3 text-white/80">The Opportunity</a>
+    <a href={link('why')} class="mobile-nav-link min-h-12 flex items-center py-3 text-white/80">Why This Domain</a>
+    <a href={link('uses')} class="mobile-nav-link min-h-12 flex items-center py-3 text-white/80">Ideal For</a>
+    <a href={link('faq')} class="mobile-nav-link min-h-12 flex items-center py-3 text-white/80">FAQ</a>
+    <a href="/blog/" class="mobile-nav-link min-h-12 flex items-center py-3 text-white/80">Guides</a>
     <div class="pt-4 border-t border-white/10">
-      <a href={mailto} class="block w-full text-center py-3.5 rounded-2xl bg-white text-dark font-semibold">Secure This Domain</a>
+      <a href={mailto} class="block w-full text-center py-4 min-h-12 rounded-2xl bg-white text-dark font-semibold">Secure This Domain</a>
     </div>
   </div>
 </div>
@@ -116,18 +134,18 @@ const mailto = acquisitionMailto();
     });
   }
 
-  // Smooth scroll
+  // Smooth scroll (skips the skip-link so keyboard focus still moves)
   function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        const targetId = this.getAttribute('href')?.substring(1);
-        const target = document.getElementById(targetId || '');
-        if (target) {
-          e.preventDefault();
-          const offset = 80;
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          window.scrollBy(0, -offset);
-        }
+    document.querySelectorAll('a[href^="#"]:not([href="#main"])').forEach(anchor => {
+      anchor.addEventListener('click', function(this: HTMLAnchorElement, e: Event) {
+        const id = this.getAttribute('href')?.slice(1);
+        const target = id ? document.getElementById(id) : null;
+        if (!target) return;
+        e.preventDefault();
+        const top = target.getBoundingClientRect().top + window.scrollY - 80;
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
+        history.replaceState(null, '', `#${id}`);
       });
     });
   }

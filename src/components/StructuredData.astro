@@ -1,33 +1,28 @@
 ---
 import {
   SITE_NAME,
+  SITE_URL,
   HERO_IMAGE_URL,
   ACQUISITION_EMAIL,
   CANONICAL_HOME,
+  DOMAIN_PRICE,
+  canonicalUrl,
+  type FaqItem,
+  type ArticleMeta,
 } from '../lib/constants';
 
-const description =
-  'secureaiframeworks.cloud — The definitive, category-owning premium .cloud domain for secure AI frameworks, enterprise AI security, guardrails, compliance, and trustworthy AI infrastructure.';
+interface Props {
+  title: string;
+  description: string;
+  faq?: FaqItem[];
+  article?: ArticleMeta;
+}
 
-const webPage = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: `${SITE_NAME} — Secure AI Frameworks — Premium Domain`,
-  description,
-  url: CANONICAL_HOME,
-  inLanguage: 'en-US',
-  primaryImageOfPage: {
-    '@type': 'ImageObject',
-    url: HERO_IMAGE_URL,
-    contentUrl: HERO_IMAGE_URL,
-  },
-  about: {
-    '@type': 'Thing',
-    name: 'Secure AI Frameworks Domain',
-    description:
-      'Premium .cloud domain name asset for secure AI frameworks, enterprise AI security, guardrails, governance, and trustworthy AI infrastructure.',
-  },
-};
+const { title, description, faq, article } = Astro.props;
+const isHome =
+  Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
+const canonical = canonicalUrl(Astro.url.pathname);
+const published = article?.pubDate.toISOString();
 
 const organization = {
   '@context': 'https://schema.org',
@@ -37,25 +32,77 @@ const organization = {
   email: ACQUISITION_EMAIL,
   logo: HERO_IMAGE_URL,
   description,
+  sameAs: [`${SITE_URL}/`],
 };
 
+const webPage = {
+  '@context': 'https://schema.org',
+  '@type': article ? 'BlogPosting' : 'WebPage',
+  name: title,
+  headline: article ? title : undefined,
+  description,
+  url: canonical,
+  inLanguage: 'en-US',
+  datePublished: published,
+  keywords: article?.tags?.join(', '),
+  author: article
+    ? { '@type': 'Organization', name: SITE_NAME, url: CANONICAL_HOME }
+    : undefined,
+  publisher: {
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: CANONICAL_HOME,
+    logo: { '@type': 'ImageObject', url: HERO_IMAGE_URL },
+  },
+  mainEntityOfPage: article
+    ? { '@type': 'WebPage', '@id': canonical }
+    : undefined,
+  isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: CANONICAL_HOME },
+  primaryImageOfPage: {
+    '@type': 'ImageObject',
+    url: HERO_IMAGE_URL,
+    contentUrl: HERO_IMAGE_URL,
+    width: 1200,
+    height: 630,
+  },
+  about: article
+    ? undefined
+    : {
+        '@type': 'Thing',
+        name: 'Secure AI Frameworks Domain',
+        description:
+          'Premium .cloud domain name asset for secure AI frameworks, enterprise AI security, guardrails, governance, and trustworthy AI infrastructure.',
+      },
+};
+
+/** Product + Offer schema — only meaningful on the page that sells the domain. */
 const product = {
   '@context': 'https://schema.org',
   '@type': 'Product',
-  name: 'secureaiframeworks.cloud domain name',
+  name: `${SITE_NAME} domain name`,
+  sku: 'secureaiframeworks-cloud',
+  gtin: 'secureaiframeworks-cloud',
+  mpn: 'secureaiframeworks-cloud',
+  brand: { '@type': 'Brand', name: SITE_NAME },
+  image: [HERO_IMAGE_URL],
   description:
     'Premium .cloud domain for secure AI frameworks and enterprise AI security infrastructure. A category-owning domain asset for AI security, guardrails, compliance, and trustworthy AI.',
   category: 'Domain Name',
+  url: CANONICAL_HOME,
   offers: {
     '@type': 'Offer',
-    availability: 'https://schema.org/InStock',
-    price: '14997',
+    price: DOMAIN_PRICE,
     priceCurrency: 'USD',
+    availability: 'https://schema.org/InStock',
+    itemCondition: 'https://schema.org/NewCondition',
+    url: CANONICAL_HOME,
+    priceValidUntil: '2027-12-31',
     seller: {
       '@type': 'Organization',
+      name: SITE_NAME,
       email: ACQUISITION_EMAIL,
+      url: CANONICAL_HOME,
     },
-    url: `mailto:${ACQUISITION_EMAIL}`,
     shippingDetails: {
       '@type': 'OfferShippingDetails',
       shippingRate: {
@@ -93,8 +140,26 @@ const product = {
     },
   },
 };
+
+const faqSchema =
+  faq && faq.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faq.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: { '@type': 'Answer', text: item.answer },
+        })),
+      }
+    : null;
+
+const graphs = [webPage, organization, ...(isHome ? [product] : [])];
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(webPage)} />
-<script type="application/ld+json" set:html={JSON.stringify(organization)} />
-<script type="application/ld+json" set:html={JSON.stringify(product)} />
+{
+  graphs.map((graph) => (
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
+  ))
+}
+{faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}

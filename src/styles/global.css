@@ -1,5 +1,28 @@
 @import "tailwindcss";
 
+/* Self-hosted variable fonts — no third-party render-blocking requests. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 @theme {
   --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
@@ -37,6 +60,15 @@
 
   ::selection {
     @apply bg-cyan-400/30 text-white;
+  }
+
+  /* Long, unbroken brand strings (e.g. secureaiframeworks.cloud) must never
+     force a container wider than its parent. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    overflow-wrap: anywhere;
   }
 }
 
@@ -110,8 +142,11 @@
     background-clip: text;
   }
 
-  .hero-bg {
-    background-image: linear-gradient(rgba(10, 10, 15, 0.68), rgba(10, 10, 15, 0.75));
+  /* Hero artwork — same URL as the <link rel="preload"> so the LCP image
+     is discovered before first paint. */
+  .hero-art {
+    background-image: linear-gradient(rgba(10, 10, 15, 0.68), rgba(10, 10, 15, 0.75)),
+      url("https://imagedelivery.net/-sPAUAWeA405NiWJ0SNIQA/32fbeea6-ef96-4813-4082-7211eb59cb00/public");
     background-size: cover;
     background-position: center;
   }
@@ -124,4 +159,116 @@
 
 .animate-pulse-soft {
   animation: pulse-soft 3s ease-in-out infinite;
+}
+
+/* FAQ disclosure marker (Safari) */
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Scroll reveal — only applies when JS can run, so content is never
+   hidden for no-JS crawlers or users with reduced motion. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Long-form guide styling (markdown output from content collections) */
+.article-body {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.article-body > * + * {
+  margin-top: 1.25rem;
+}
+
+.article-body h2 {
+  margin-top: 2.75rem;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+
+.article-body h3 {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.article-body a {
+  color: #22f5ff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.article-body a:hover {
+  color: #67e8f9;
+}
+
+.article-body strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.article-body ul,
+.article-body ol {
+  padding-left: 1.35rem;
+}
+
+.article-body ul {
+  list-style: disc;
+}
+
+.article-body ol {
+  list-style: decimal;
+}
+
+.article-body li + li {
+  margin-top: 0.5rem;
+}
+
+.article-body blockquote {
+  border-left: 3px solid rgba(34, 245, 255, 0.5);
+  padding-left: 1.1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+.article-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.4rem;
+  padding: 0.1rem 0.35rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

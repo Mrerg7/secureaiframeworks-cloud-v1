@@ -1,6 +1,45 @@
 const CANONICAL_HOST = 'secureaiframeworks.cloud';
 const HSTS = 'max-age=31536000; includeSubDomains; preload';
 
+/**
+ * Locked-down CSP for a static site:
+ * - page scripts are bundled by Astro into same-origin modules (never inlined)
+ * - fonts are self-hosted in /fonts
+ * - the hero/OG artwork is delivered by the Cloudflare Images CDN
+ */
+const CONTENT_SECURITY_POLICY = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "script-src 'self'",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self'",
+  "img-src 'self' data: https://imagedelivery.net",
+  "connect-src 'self'",
+  "manifest-src 'self'",
+  'upgrade-insecure-requests',
+].join('; ');
+
+const SECURITY_HEADERS: Record<string, string> = {
+  'Content-Security-Policy': CONTENT_SECURITY_POLICY,
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy':
+    'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+  'Cross-Origin-Opener-Policy': 'same-origin',
+  'Cross-Origin-Resource-Policy': 'same-origin',
+  'X-DNS-Prefetch-Control': 'on',
+  'Strict-Transport-Security': HSTS,
+};
+
+/** Hashed build artifacts are safe to cache for a year. */
+const IMMUTABLE_CACHE = 'public, max-age=31536000, immutable';
+/** Stable-name font files: long-lived, but revalidate so a swap propagates. */
+const FONT_CACHE = 'public, max-age=604800, stale-while-revalidate=86400';
+
 type AssetEnv = {
   ASSETS: { fetch: (request: Request) => Promise<Response> };
 };
@@ -32,6 +71,43 @@ function isLocalDevHost(hostname: string): boolean {
   );
 }
 
+function isImmutableAsset(pathname: string): boolean {
+  return pathname.startsWith('/_astro/');
+}
+
+function isFont(pathname: string): boolean {
+  return pathname.startsWith('/fonts/');
+}
+
+function withCacheHeaders(headers: Headers, pathname: string): void {
+  if (isImmutableAsset(pathname)) {
+    headers.set('Cache-Control', IMMUTABLE_CACHE);
+  } else if (isFont(pathname)) {
+    headers.set('Cache-Control', FONT_CACHE);
+  }
+}
+
+function secureHeaders(): Headers {
+  const headers = new Headers();
+  for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+    headers.set(key, value);
+  }
+  return headers;
+}
+
+function withHeaders(response: Response, pathname: string): Response {
+  const headers = new Headers(response.headers);
+  for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+    headers.set(key, value);
+  }
+  withCacheHeaders(headers, pathname);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 export default {
   async fetch(request: Request, env: AssetEnv): Promise<Response> {
     const url = new URL(request.url);
@@ -47,22 +123,12 @@ export default {
       dest.hostname = CANONICAL_HOST;
       dest.port = '';
       dest.pathname = path;
-      return new Response(null, {
-        status: 301,
-        headers: {
-          Location: dest.toString(),
-          'Strict-Transport-Security': HSTS,
-        },
-      });
+      const headers = secureHeaders();
+      headers.set('Location', dest.toString());
+      return new Response(null, { status: 301, headers });
     }
 
     const response = await env.ASSETS.fetch(request);
-    const headers = new Headers(response.headers);
-    headers.set('Strict-Transport-Security', HSTS);
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers,
-    });
+    return withHeaders(response, url.pathname);
   },
 };

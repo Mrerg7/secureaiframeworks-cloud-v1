@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+import { acquisitionMailto, pageTitle } from '../../lib/constants';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const title = pageTitle(post.data.title);
+const description = post.data.description;
+const mailto = acquisitionMailto();
+const published = post.data.pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  article={{
+    title: post.data.title,
+    description: post.data.description,
+    pubDate: post.data.pubDate,
+    tags: post.data.tags,
+  }}
+>
+  <Nav home={false} />
+
+  <main id="main" class="pt-28 pb-16">
+    <article class="max-w-3xl mx-auto px-6">
+      <nav class="flex flex-wrap items-center gap-x-1 text-xs text-white/55 mb-4 -ml-1" aria-label="Breadcrumb">
+        <a href="/" class="inline-flex items-center min-h-11 px-1 py-2.5 hover:text-white transition-colors">Home</a>
+        <span class="mx-1" aria-hidden="true">/</span>
+        <a href="/blog/" class="inline-flex items-center min-h-11 px-1 py-2.5 hover:text-white transition-colors">Guides</a>
+      </nav>
+
+      <header class="mb-10">
+        <div class="flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-widest text-white/55 mb-5">
+          <time datetime={post.data.pubDate.toISOString()}>{published}</time>
+          {
+            post.data.tags.map((tag) => (
+              <span class="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/50">
+                {tag}
+              </span>
+            ))
+          }
+        </div>
+
+        <h1 class="font-display text-3xl sm:text-4xl md:text-5xl tracking-[-0.04em] leading-[1.05] mb-5">
+          {post.data.title}
+        </h1>
+        <p class="text-lg text-white/65 leading-relaxed">
+          {post.data.description}
+        </p>
+      </header>
+
+      <div class="article-body">
+        <Content />
+      </div>
+
+      <footer class="mt-14 pt-8 border-t border-white/10">
+        <div class="glass rounded-3xl border border-white/10 p-7 flex flex-col sm:flex-row sm:items-center gap-5 justify-between">
+          <p class="text-sm text-white/70 max-w-sm">
+            <span class="text-white font-medium">secureaiframeworks.cloud</span> — the
+            category-owning domain for secure AI frameworks.
+          </p>
+          <a
+            href="/"
+            class="inline-flex items-center justify-center px-7 py-3.5 min-h-12 rounded-2xl bg-gradient-to-r from-[#22f5ff] to-[#a855f7] text-dark font-bold text-sm whitespace-nowrap hover:brightness-105 active:scale-[0.985] transition-all"
+          >
+            View the domain
+          </a>
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-center justify-between gap-4 text-sm">
+          <a href="/blog/" class="nav-link inline-flex items-center min-h-11 text-white/60 hover:text-white">← All guides</a>
+          <a href={mailto} class="nav-link inline-flex items-center min-h-11 text-[#22f5ff] hover:text-cyan-300">
+            Inquire about acquisition →
+          </a>
+        </div>
+      </footer>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

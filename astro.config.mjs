@@ -12,6 +12,11 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // Never inline page scripts — external same-origin modules keep the
+      // Content-Security-Policy (`script-src 'self'`) enforceable.
+      assetsInlineLimit: 0,
+    },
   },
 
   integrations: [
