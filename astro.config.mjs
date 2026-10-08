@@ -10,6 +10,11 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'always',
 
+  build: {
+    // Inline the stylesheet so first paint never waits on a second request.
+    inlineStylesheets: 'always',
+  },
+
   vite: {
     plugins: [tailwindcss()],
     build: {

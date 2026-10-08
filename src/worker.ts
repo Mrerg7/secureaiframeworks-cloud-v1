@@ -6,6 +6,8 @@ const HSTS = 'max-age=31536000; includeSubDomains; preload';
  * - page scripts are bundled by Astro into same-origin modules (never inlined)
  * - fonts are self-hosted in /fonts
  * - the hero/OG artwork is delivered by the Cloudflare Images CDN
+ * - static.cloudflareinsights.com is Cloudflare's zone-injected Web Analytics
+ *   beacon (auto-added at the edge — not part of this codebase)
  */
 const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
@@ -13,11 +15,11 @@ const CONTENT_SECURITY_POLICY = [
   "object-src 'none'",
   "frame-ancestors 'none'",
   "form-action 'self'",
-  "script-src 'self'",
+  "script-src 'self' https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self'",
   "img-src 'self' data: https://imagedelivery.net",
-  "connect-src 'self'",
+  "connect-src 'self' https://static.cloudflareinsights.com",
   "manifest-src 'self'",
   'upgrade-insecure-requests',
 ].join('; ');
