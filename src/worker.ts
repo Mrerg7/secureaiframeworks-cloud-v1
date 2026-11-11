@@ -60,9 +60,33 @@ function visitorUsesHttp(request: Request): boolean {
   return new URL(request.url).protocol === 'http:';
 }
 
+/** True for real files (xml, txt, woff2, js, …) that must not gain a trailing slash. */
+function isAssetLikePath(pathname: string): boolean {
+  const last = pathname.split('/').pop() ?? '';
+  return /\.[a-zA-Z0-9]{1,16}$/.test(last);
+}
+
+/**
+ * Apex HTTPS URLs with a trailing slash are the only HTML URLs we want indexed.
+ * Normalize index.html aliases and extensionless paths in one place so Google
+ * never sees Cloudflare Assets' temporary 307 trailing-slash redirects.
+ */
 function canonicalPath(pathname: string): string {
-  if (pathname === '/index.html' || pathname === '/index') return '/';
-  return pathname.replace(/\/index\.html$/i, '/').replace(/\/index$/i, '/');
+  let path = pathname;
+
+  if (path === '/index.html' || path === '/index') return '/';
+  path = path.replace(/\/index\.html$/i, '/').replace(/\/index$/i, '/');
+
+  // /page.html → /page/ (matches force-trailing-slash canonical form)
+  if (/\.html$/i.test(path)) {
+    path = `${path.replace(/\.html$/i, '')}/`;
+  }
+
+  if (path !== '/' && !path.endsWith('/') && !isAssetLikePath(path)) {
+    path += '/';
+  }
+
+  return path.replace(/\/{2,}/g, '/');
 }
 
 function isLocalDevHost(hostname: string): boolean {
@@ -110,6 +134,12 @@ function withHeaders(response: Response, pathname: string): Response {
   });
 }
 
+function permanentRedirect(dest: URL): Response {
+  const headers = secureHeaders();
+  headers.set('Location', dest.toString());
+  return new Response(null, { status: 301, headers });
+}
+
 export default {
   async fetch(request: Request, env: AssetEnv): Promise<Response> {
     const url = new URL(request.url);
@@ -119,18 +149,47 @@ export default {
     const needsHost = host === `www.${CANONICAL_HOST}`;
     const needsPath = path !== url.pathname;
 
+    // One permanent hop to the final canonical URL — never leave a temporary
+    // 307 trailing-slash redirect (or http→https then slash) for Googlebot.
     if (!isLocalDevHost(host) && (needsHttps || needsHost || needsPath)) {
       const dest = new URL(url.href);
       dest.protocol = 'https:';
       dest.hostname = CANONICAL_HOST;
       dest.port = '';
       dest.pathname = path;
-      const headers = secureHeaders();
-      headers.set('Location', dest.toString());
-      return new Response(null, { status: 301, headers });
+      return permanentRedirect(dest);
     }
 
-    const response = await env.ASSETS.fetch(request);
-    return withHeaders(response, url.pathname);
+    // Fetch the canonical path so force-trailing-slash does not need to redirect.
+    let assetRequest = request;
+    if (path !== url.pathname) {
+      const assetUrl = new URL(request.url);
+      assetUrl.pathname = path;
+      assetRequest = new Request(assetUrl.toString(), request);
+    }
+
+    const response = await env.ASSETS.fetch(assetRequest);
+
+    // If Assets still emits a temporary trailing-slash/html redirect (307),
+    // upgrade it to a single permanent 301 at the apex HTTPS canonical URL.
+    if (
+      !isLocalDevHost(host) &&
+      (response.status === 301 ||
+        response.status === 302 ||
+        response.status === 307 ||
+        response.status === 308)
+    ) {
+      const location = response.headers.get('Location');
+      if (location) {
+        const dest = new URL(location, `https://${CANONICAL_HOST}`);
+        dest.protocol = 'https:';
+        dest.hostname = CANONICAL_HOST;
+        dest.port = '';
+        dest.pathname = canonicalPath(dest.pathname);
+        return permanentRedirect(dest);
+      }
+    }
+
+    return withHeaders(response, path);
   },
 };

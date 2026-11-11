@@ -1,2 +1,5 @@
+# Kept minimal on purpose. With run_worker_first, the Worker owns canonical
+# 301s (HTTPS, apex host, trailing slash, index.html). Extra static rules here
+# can race Assets' html_handling and produce confusing local/preview redirects.
 /index.html / 301
 /index / 301

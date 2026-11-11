@@ -17,7 +17,7 @@
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.2",
     "tailwindcss": "^4.3.0",
-    "wrangler": "^4.96.0"
+    "wrangler": "^4.160.0"
   },
   "overrides": {
     "vite": "^7"

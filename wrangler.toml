@@ -1,9 +1,12 @@
 name = "secureaiframeworks-cloud-v1"
 main = "src/worker.ts"
-compatibility_date = "2026-08-17"
+compatibility_date = "2026-11-11"
 workers_dev = false
 preview_urls = false
 
+# run_worker_first: Worker issues a single 301 to the canonical HTTPS + trailing-
+# slash URL before Assets can emit a temporary 307 (bad for Google indexing).
+# force-trailing-slash: serve folder index HTML at /path/ once the URL is canonical.
 [assets]
 directory = "./dist"
 binding = "ASSETS"
